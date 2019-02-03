@@ -9,18 +9,17 @@ int add(int i, int j) {
 
 class Pet{
 public:
-	Pet(py::array_t<int> input1){
+	Pet(py::array_t<unsigned char> input1){
 		m_data = input1;
 	}
-	int get(int idx, int idy){
+	unsigned char get_elem(int idy, int idx){
 		py::buffer_info buf1 = m_data.request();
-		int *ptr1 = (int *) buf1.ptr;
-		size_t X = buf1.shape[0];
-		size_t Y = buf1.shape[1];
-		return ptr1[idx*Y+ idy];
+		auto ptr1 = (unsigned char *) buf1.ptr;
+		size_t w = buf1.shape[1];
+		return ptr1[idy*w+ idx];
 
 	}
-	py::array_t<int> m_data;
+	py::array_t<unsigned char> m_data;
 };
 
 namespace py = pybind11;
@@ -41,8 +40,8 @@ PYBIND11_MODULE(cmake_example, m) {
 
 
 	py::class_<Pet>(m, "Pet")
-		.def(py::init<py::array_t<int>>())
-		.def("get", &Pet::get);
+		.def(py::init<py::array_t<unsigned char>>())
+		.def("get_elem", &Pet::get_elem);
 
 
     m.def("add", &add, R"pbdoc(
